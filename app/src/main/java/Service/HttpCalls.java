@@ -14,7 +14,7 @@ public class HttpCalls
     HttpResponse hr=null;
     DefaultHttpClient hc=new DefaultHttpClient();
     HttpEntity entity=null;
-    HttpPost hp=new HttpPost("http://192.168.0.11/RecyclerView/index.php");
+    HttpPost hp=new HttpPost("http://192.168.1.8/RecyclerView/index.php");
     String jsonResponse;
 
     public String getJSON()

@@ -7,7 +7,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab;
     private JSONObject jsonObject;
     private JSONArray jsonArray;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -46,6 +49,26 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(recyclerViewAdapater);
 
         fab=(FloatingActionButton)findViewById(R.id.floatingActionButton);
+
+        mToolbar=(Toolbar)findViewById(R.id.toolbar);
+        mToolbar.setTitle("Current Employees");
+        mToolbar.setTitleTextColor(0xFFFFFFFF);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        //getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener()
+        {
+
+            @Override
+            public void onClick(View v)
+            {
+                Toast.makeText(MainActivity.this,"Navigation Clicked",Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     private void prepareEmployeeList(JSONArray empList)

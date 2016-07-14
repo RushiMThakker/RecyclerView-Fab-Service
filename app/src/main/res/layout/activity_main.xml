@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/employeeName"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        android:layout_below="@+id/toolbar">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -30,4 +31,13 @@
         android:onClick="refreshData">
 
     </android.support.design.widget.FloatingActionButton>
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="@color/colorPrimary">
+
+    </android.support.v7.widget.Toolbar>
 </RelativeLayout>
