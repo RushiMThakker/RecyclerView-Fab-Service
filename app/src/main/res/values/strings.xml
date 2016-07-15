@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Employee Database</string>
+    <string name="inbox_string">Inbox</string>
+    <string name="sent_mail_string">Sent Mail</string>
+    <string name="draft_string">Drafts</string>
+    <string name="trash_string">Trash</string>
+    <string name="openDrawer">Open Drawer</string>
+    <string name="closeDrawer">Close Drawer</string>
 </resources>

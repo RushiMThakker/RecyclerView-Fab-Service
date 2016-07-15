@@ -1,56 +1,35 @@
 package astoundtechnology.recyclerview;
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import CustomAdapter.EmployeeAdapter;
-import Model.Employee;
-import Service.HttpCalls;
+import Fragment.ContentFragment;
 
 public class MainActivity extends AppCompatActivity
 {
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter recyclerViewAdapater;
-    private RecyclerView.LayoutManager recyclerViewLayoutManager;
-    private List<Employee> employeeList=new ArrayList<Employee>();
-    private FloatingActionButton fab;
-    private JSONObject jsonObject;
-    private JSONArray jsonArray;
+
+
     private Toolbar mToolbar;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = (RecyclerView) findViewById(R.id.employeeName);
-        recyclerViewLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(recyclerViewLayoutManager);
-        recyclerViewAdapater = new EmployeeAdapter(employeeList);
-        recyclerView.setAdapter(recyclerViewAdapater);
 
-        fab=(FloatingActionButton)findViewById(R.id.floatingActionButton);
-
-        mToolbar=(Toolbar)findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        assert mToolbar != null;
         mToolbar.setTitle("Current Employees");
         mToolbar.setTitleTextColor(0xFFFFFFFF);
         setSupportActionBar(mToolbar);
@@ -59,87 +38,92 @@ public class MainActivity extends AppCompatActivity
         //getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
+        ContentFragment fragment = new ContentFragment();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, fragment);
+        fragmentTransaction.commit();
+
         mToolbar.setNavigationOnClickListener(new View.OnClickListener()
         {
 
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(MainActivity.this,"Navigation Clicked",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Navigation Clicked", Toast.LENGTH_LONG).show();
             }
         });
 
-    }
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
-    private void prepareEmployeeList(JSONArray empList)
-    {
-        employeeList.clear();
-
-        for(int i=0;i<empList.length();i++)
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
         {
-            try
+
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item)
             {
-                JSONObject emp=empList.getJSONObject(i);
+                if (item.isChecked()) item.setChecked(false);
 
-                DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+                drawerLayout.closeDrawers();
 
-                Date joinDate=dateFormat.parse(emp.getString("Employee_Date"));
+                switch (item.getItemId())
+                {
+                    case R.id.drafts:
+                        Toast.makeText(getApplicationContext(), "Inbox Selected", Toast.LENGTH_SHORT).show();
+                        ContentFragment fragment = new ContentFragment();
+                        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.frame, fragment);
+                        fragmentTransaction.commit();
+                        return true;
+                    case R.id.email:
+                        Toast.makeText(getApplicationContext(), "Inbox Selected", Toast.LENGTH_SHORT).show();
+                        ;
+                        return true;
+                    case R.id.inbox:
+                        Toast.makeText(getApplicationContext(), "Inbox Selected", Toast.LENGTH_SHORT).show();
+                        ;
+                        return true;
+                    case R.id.trash:
+                        Toast.makeText(getApplicationContext(), "Inbox Selected", Toast.LENGTH_SHORT).show();
+                        ;
+                        return true;
+                    default:
+                        Toast.makeText(getApplicationContext(), "Inbox Selected", Toast.LENGTH_SHORT).show();
+                        ;
+                        return true;
+                }
 
-                Employee current_emp=
-                        new Employee(emp.getString("Employee_Name"),emp.getString("Employee_Designation"),
-                                joinDate);
-                employeeList.add(current_emp);
-            } catch (Exception e)
-            {
-                e.printStackTrace();
             }
-        }
-    }
+        });
 
-    public void refreshData(View v)
-    {
-        WebCall webCall=new WebCall();
-        webCall.execute();
-
-    }
-
-    private class WebCall extends AsyncTask
-    {
-        private ProgressDialog mProgressDialog;
-
-        @Override
-        protected Object doInBackground(Object[] params)
+        // Initializing Drawer Layout and ActionBarToggle
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar, R.string.openDrawer, R.string.closeDrawer)
         {
-            HttpCalls callService=new HttpCalls();
-            String jsonString=callService.getJSON();
-            try
+
+            @Override
+            public void onDrawerClosed(View drawerView)
             {
-                jsonObject=new JSONObject(jsonString);
-                jsonArray=jsonObject.getJSONArray("Employee");
-                prepareEmployeeList(jsonArray);
-            } catch (JSONException e)
-            {
-                e.printStackTrace();
+                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
+                super.onDrawerClosed(drawerView);
             }
-            return null;
-        }
 
-        @Override
-        protected void onPreExecute()
-        {
-            mProgressDialog=new ProgressDialog(MainActivity.this);
-            mProgressDialog.setTitle("Refreshing Data");
-            mProgressDialog.setMessage("Loading...");
-            mProgressDialog.show();
+            @Override
+            public void onDrawerOpened(View drawerView)
+            {
+                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
 
-        }
+                super.onDrawerOpened(drawerView);
+            }
+        };
 
-        @Override
-        protected void onPostExecute(Object o)
-        {
-            mProgressDialog.dismiss();
-            recyclerViewAdapater.notifyDataSetChanged();
-        }
+        //Setting the actionbarToggle to drawer layout
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
+        //calling sync state is necessay or else your hamburger icon wont show up
+        actionBarDrawerToggle.syncState();
+
     }
+
+
 }
 
